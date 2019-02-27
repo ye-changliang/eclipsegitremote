@@ -1,0 +1,19 @@
+
+.nav-list li.active {
+    background: #428bca;
+}
+
+.nav-list li.active a {
+    color: whitesmoke;
+}
+
+.nav-list li.active a:hover {
+    color: #428bca;
+    text-decoration: none;
+    background-color: #eee;
+}
+
+.nav-sidebar > .active > a, .nav-sidebar > .active > a:hover, .nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #c2d0dc;
+}

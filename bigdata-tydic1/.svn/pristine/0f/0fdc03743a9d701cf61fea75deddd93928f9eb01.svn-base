@@ -1,0 +1,13 @@
+package com.tydic.bigdata.repository.taskconfig;
+
+import com.tydic.bigdata.domain.taskconfig.TaskStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ * @author taowc
+ * @date 2018/8/31
+ * @desc
+ */
+public interface TaskStatusRepository extends JpaRepository<TaskStatus, Long> {
+
+}

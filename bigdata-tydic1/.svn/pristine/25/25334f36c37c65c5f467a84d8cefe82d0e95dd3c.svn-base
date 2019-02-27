@@ -1,0 +1,9 @@
+server.port=5566
+#测试环境
+spring.profiles.active=dev
+#生产环境
+#spring.profiles.active=prod
+
+server.servlet.context-path=/bdpfm
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=GMT+8

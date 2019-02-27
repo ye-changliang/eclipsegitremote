@@ -1,0 +1,34 @@
+spring.datasource.primary.jdbcUrl=jdbc:mysql://134.225.72.15:3306/test?useUnicode=true&characterEncoding=UTF8&autoReconnect=true
+spring.datasource.primary.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.primary.username=tydk
+spring.datasource.primary.password=tydk2017
+
+spring.datasource.secondary.jdbcUrl=jdbc:oracle:thin:@134.224.106.9:1521/srv1
+spring.datasource.secondary.driverClassName=oracle.jdbc.driver.OracleDriver
+spring.datasource.secondary.username=tydic_etl
+spring.datasource.secondary.password=jxdx2016
+
+
+#mybatis 日志
+logging.level.com.tydic.bigdata=DEBUG
+
+# JPA
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.generate_statistics=true
+spring.jpa.properties.hibernate.session.events.log=true
+#thymelea模板配置
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML5
+spring.thymeleaf.encoding=UTF-8
+#热部署文件，页面不产生缓存，及时更新
+spring.thymeleaf.cache=false
+spring.resources.chain.strategy.content.enabled=true
+spring.resources.chain.strategy.content.paths=/**
+
+
+shortUrl.domain=http://localhost:8080/outlink/
+
+filePath= D:\\configFile
+fileDownPath=D:\\configDownFile

@@ -1,0 +1,225 @@
+package com.tydic.bigdata.domain.apiconfig;
+
+import javax.persistence.*;
+import java.time.Instant;
+
+/**
+ * @author taowc
+ * @date 2018/9/7
+ * @desc api 参数配置
+ */
+@Entity
+@Table(name = "comm_api_param_config")
+public class ApiParamsConfig {
+
+    /**
+     * 主键
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+
+    /**
+     * 接口名称
+     */
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "api_code",referencedColumnName = "api_code",insertable = false,updatable = false)
+    private ApiConfigMenu apiConfigMenu;
+
+    @Column(name = "api_code")
+    private String apiCode;
+
+    /**
+     * 参数类型
+     */
+    @Column(name = "param_type")
+    private Integer paramType;
+
+    /**
+     * 参数名称
+     */
+    @Column(name = "param_name")
+    private String paramName;
+    /**
+     * 参数中文名称
+     */
+    @Column(name = "param_name_zh")
+    private String paramNameZh;
+
+    /**
+     * 参数值
+     */
+    @Column(name = "param_value")
+    private String paramValue;
+
+    /**
+     * 参数 动静态
+     */
+    @Column(name = "param_type_dynamic")
+    private Integer paramTypeDynamic;
+    /**
+     * 参数 动态值 按天按月
+     */
+    @Column(name = "dynamic_type")
+    private Integer dynamicType;
+
+    /**
+     * 矫正值
+     */
+    @Column(name = "dynamic_divier")
+    private Integer dynamicDivier;
+
+
+    /**
+     * 是否可用
+     */
+    @Column(name = "status")
+    private Integer status;
+
+
+    /**
+     * 更新时间
+     */
+    @Column(nullable = false, name = "update_time")
+    private Instant updateTime;
+
+    /**
+     * 更新人
+     */
+    @Column(name = "update_user")
+    private String updateUser;
+
+
+    /**
+     * 更新操作  更新时间
+     */
+    @PrePersist
+    public void prePersist() {
+        updateTime = Instant.now();
+        updateUser = "test";
+        status = 1;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updateTime = Instant.now();
+        updateUser = "testUpdate";
+        status = 1;
+    }
+
+
+
+    /**
+     * get  set 方法
+     */
+
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ApiConfigMenu getApiConfigMenu() {
+        return apiConfigMenu;
+    }
+
+    public void setApiConfigMenu(ApiConfigMenu apiConfigMenu) {
+        this.apiConfigMenu = apiConfigMenu;
+    }
+
+    public String getApiCode() {
+        return apiCode;
+    }
+
+    public void setApiCode(String apiCode) {
+        this.apiCode = apiCode;
+    }
+
+
+    public Integer getParamType() {
+        return paramType;
+    }
+
+    public void setParamType(Integer paramType) {
+        this.paramType = paramType;
+    }
+
+    public String getParamName() {
+        return paramName;
+    }
+
+    public void setParamName(String paramName) {
+        this.paramName = paramName;
+    }
+
+    public String getParamNameZh() {
+        return paramNameZh;
+    }
+
+    public void setParamNameZh(String paramNameZh) {
+        this.paramNameZh = paramNameZh;
+    }
+
+    public String getParamValue() {
+        return paramValue;
+    }
+
+    public void setParamValue(String paramValue) {
+        this.paramValue = paramValue;
+    }
+
+    public Integer getParamTypeDynamic() {
+        return paramTypeDynamic;
+    }
+
+    public void setParamTypeDynamic(Integer paramTypeDynamic) {
+        this.paramTypeDynamic = paramTypeDynamic;
+    }
+
+    public Integer getDynamicType() {
+        return dynamicType;
+    }
+
+    public void setDynamicType(Integer dynamicType) {
+        this.dynamicType = dynamicType;
+    }
+
+    public Integer getDynamicDivier() {
+        return dynamicDivier;
+    }
+
+    public void setDynamicDivier(Integer dynamicDivier) {
+        this.dynamicDivier = dynamicDivier;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Instant getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Instant updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+}

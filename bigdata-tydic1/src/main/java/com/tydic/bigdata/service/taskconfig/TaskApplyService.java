@@ -1,0 +1,300 @@
+package com.tydic.bigdata.service.taskconfig;
+
+import com.tydic.bigdata.domain.taskconfig.TaskInfo;
+import com.tydic.bigdata.domain.taskconfig.TaskStatus;
+import com.tydic.bigdata.mapper.JobEntryMapper;
+import com.tydic.bigdata.repository.taskconfig.TaskInfoRepository;
+import com.tydic.bigdata.repository.taskconfig.TaskStatusRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.*;
+
+@Service
+public class TaskApplyService {
+
+    @Autowired
+    private TaskInfoRepository taskInfoRepository;
+    @Autowired
+    private JobEntryMapper jobEntryMapper;
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
+    /**
+     * 查询 申请记录
+     *
+     * @param pageable
+     * @param taskInfo
+     * @return
+     */
+    public Page<TaskInfo> findAllByNameAndAuditStatus(Pageable pageable, TaskInfo taskInfo) {
+
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains())
+                .withMatcher("applyStatus", match -> match.stringMatcher(ExampleMatcher.StringMatcher.DEFAULT))
+                .withMatcher("releaseStatus", match -> match.stringMatcher(ExampleMatcher.StringMatcher.DEFAULT));
+
+        return taskInfoRepository.findAll(Example.of(taskInfo, exampleMatcher), pageable);
+
+    }
+
+
+    /**
+     * 保存
+     *
+     * @param taskInfo
+     * @return
+     */
+    public boolean save(TaskInfo taskInfo) {
+        if (Objects.equals(taskInfo.getId(), null)) {
+            taskInfo.setApplyTime(Instant.now());
+            //待审核
+            taskInfo.setApplyStatus(0);
+            //有效
+            taskInfo.setDeleteStatus(0);
+            taskInfo.setReleaseStatus(0);
+            //声请人
+            taskInfo.setApplyUser("测试");
+        }
+        taskInfoRepository.save(taskInfo);
+        return true;
+    }
+
+
+    /**
+     * 通过名称或者Id获取任务详情
+     *
+     * @param taskInfo
+     * @return
+     */
+    public List<Map> findTaskByNameOrId(TaskInfo taskInfo) {
+        return jobEntryMapper.findJobByNameOrId(taskInfo.getName(), taskInfo.getTaskId());
+    }
+
+    /**
+     * 获取任务运行状态
+     *
+     * @param taskInfo
+     */
+    public void findStatus(TaskInfo taskInfo) {
+        Map<String, String> result = new HashMap();
+        if (taskInfo.getTaskType() == 41) {
+            result = jobEntryMapper.findJobStatusById(taskInfo.getTaskId());
+            taskInfo.setJobStatus(result);
+        } else if (taskInfo.getTaskType() == 13) {
+            result = jobEntryMapper.findTransStatusById(taskInfo.getTaskId());
+            taskInfo.setJobStatus(result);
+        }
+        TaskStatus taskStatus = new TaskStatus();
+        taskStatus.setTaskRecordId(taskInfo.getId());
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("taskRecordId", ExampleMatcher.GenericPropertyMatchers.contains());
+        Optional<TaskStatus> taskStatusOptional = taskStatusRepository.findOne(Example.of(taskStatus, exampleMatcher));
+        if (taskStatusOptional.isPresent()) {
+            taskStatus = taskStatusOptional.get();
+        }
+        taskStatus.setTaskRecordId(taskInfo.getId());
+        taskStatus.setSTATUS(result.get("STATUS"));
+        taskStatus.setSTARTDATE(result.get("STARTDATE"));
+        taskStatus.setENDDATE(result.get("ENDDATE"));
+        taskStatus.setErrors(result.get("ERRORS")!=null?String.valueOf(result.get("ERRORS")):"0");
+
+        taskStatusRepository.save(taskStatus);
+
+    }
+
+    /**
+     * 获取任务保存的任务信息
+     */
+    public void findStatusSaved(TaskInfo taskInfo) {
+        TaskStatus taskStatus = new TaskStatus();
+        taskStatus.setTaskRecordId(taskInfo.getId());
+
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("taskRecordId", ExampleMatcher.GenericPropertyMatchers.contains());
+
+        Map statusMap = new HashMap(4);
+        taskStatusRepository.findOne(Example.of(taskStatus, exampleMatcher)).ifPresent(
+                status -> {
+                    statusMap.put("STATUS", status.getSTATUS());
+                    statusMap.put("STARTDATE", status.getSTARTDATE());
+                    statusMap.put("ENDDATE", status.getENDDATE());
+                    statusMap.put("ERRORS", status.getErrors());
+                }
+        );
+        taskInfo.setJobStatus(statusMap);
+    }
+
+    /**
+     * 稽核通过 保存任务信息
+     */
+
+
+    /**
+     * 批量审核
+     *
+     * @param ids
+     * @return
+     */
+    public boolean audit(Long ids, Integer type) {
+        return taskInfoRepository.aduitTask(ids, type) > 0;
+    }
+
+    /**
+     * 获取任务的所有组件
+     *
+     * @param jobId
+     * @param type
+     * @return
+     */
+    public List<Map> findJobDataSource(String jobId, String type) {
+        if (StringUtils.isEmpty(jobId)) {
+            return new ArrayList<>();
+        }
+        if ("41".equals(type)) {
+            return jobEntryMapper.findJobDataSource(jobId);
+        }
+        if ("13".equals(type)) {
+            return jobEntryMapper.findTransDataSource(jobId);
+        }
+        return null;
+
+    }
+
+
+    /**
+     * 获取任务的所有组件
+     *
+     * @param jobId
+     * @param type
+     * @return
+     */
+    public List<Map> findAllChildrenJobDataSource(String jobId, String type) {
+        List<Map> list = new ArrayList<>();
+        if (StringUtils.isEmpty(jobId)) {
+            return list;
+        }
+        if ("13".equals(type)) {
+            return findJobDataSource(jobId, type);
+        }
+        //组件
+        List<Map> firstSelf = findJobDataSource(jobId, type);
+        list.addAll(firstSelf);
+
+        //子job和trans
+        List<Map> jobChildren = jobEntryMapper.selectChildrenJob(jobId, "41");
+        List<Map> transChildren = jobEntryMapper.selectChildrenJob(jobId, "13");
+
+        jobChildren.forEach(map -> {
+            String jobIdm = jobEntryMapper.selectJobAttr(map.get("ID_JOBENTRY").toString());
+            if (StringUtils.isEmpty(jobIdm)) {
+                return;
+            }
+            List<Map> itemsChild = findJobDataSource(jobIdm, "41");
+            itemsChild.forEach(item -> {
+                item.put("PARENTID", map.get("ID_JOBENTRY").toString());
+            });
+            list.addAll(itemsChild);
+
+            List<Map> jobChilds = jobEntryMapper.selectChildrenJob(jobIdm, "41");
+            List<Map> transChilds = jobEntryMapper.selectChildrenJob(jobIdm, "13");
+            jobChilds.forEach(item -> {
+                String itemJobId = jobEntryMapper.selectJobAttr(item.get("ID_JOBENTRY").toString());
+                if (StringUtils.isEmpty(itemJobId)) {
+                    return;
+                }
+                List<Map> itemsChildA = findJobDataSource(itemJobId, "41");
+                itemsChildA.forEach(itema -> {
+                    itema.put("PARENTID", item.get("ID_JOBENTRY").toString());
+                    itema.put("ANCERID", map.get("ID_JOBENTRY").toString());
+                });
+                list.addAll(itemsChildA);
+            });
+            transChilds.forEach(item -> {
+                String itemTransId = jobEntryMapper.selectJobAttr(item.get("ID_JOBENTRY").toString());
+                if (StringUtils.isEmpty(itemTransId)) {
+                    return;
+                }
+                List<Map> itemsChildA = findJobDataSource(itemTransId, "13");
+                itemsChildA.forEach(itema -> {
+                    itema.put("PARENTID", item.get("ID_JOBENTRY").toString());
+                    itema.put("ANCERID", map.get("ID_JOBENTRY").toString());
+                });
+                list.addAll(itemsChildA);
+            });
+
+        });
+
+        transChildren.forEach(map -> {
+            String jobIdm = jobEntryMapper.selectJobAttr(map.get("ID_JOBENTRY").toString());
+            if (StringUtils.isEmpty(jobIdm)) {
+                return;
+            }
+            List<Map> itemsChild = findJobDataSource(jobIdm, "13");
+            itemsChild.forEach(item -> {
+                item.put("PARENTID", map.get("ID_JOBENTRY").toString());
+            });
+            list.addAll(itemsChild);
+
+        });
+
+        return list;
+
+    }
+
+    /**
+     * 获取数据源信息
+     *
+     * @param id
+     * @return
+     */
+    public List<Map> findAllDataBase(String id) {
+        return jobEntryMapper.findAllDataSource(id);
+    }
+
+
+    /**
+     * 保存数据源更改 发布功能
+     *
+     * @param jobId
+     * @param type
+     * @param dataBaseId
+     * @param jobEntryId
+     * @return
+     */
+    @Transactional(rollbackOn = Exception.class)
+    public boolean release(String jobId, String type, String dataBaseId, String jobEntryId, Long id) {
+        TaskInfo taskInfo = taskInfoRepository.findById(id).get();
+        taskInfo.setReleaseStatus(1);
+        taskInfoRepository.save(taskInfo);
+        if ("41".equals(type)) {
+            //job
+            Integer size = jobEntryMapper.updateJobDataSourceAttr(jobId, dataBaseId, jobEntryId);
+            size += jobEntryMapper.updateJobDataSource(jobId, dataBaseId, jobEntryId);
+            return size > 0;
+        }
+        if ("13".equals(type)) {
+            //转换
+            Integer size = jobEntryMapper.updateTransDataSourceAttr(jobId, dataBaseId, jobEntryId);
+            size += jobEntryMapper.updateTransDataSource(jobId, dataBaseId, jobEntryId);
+            return size > 0;
+        }
+        return true;
+    }
+
+    public boolean check(TaskInfo taskInfo) {
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("taskId", match -> match.stringMatcher(ExampleMatcher.StringMatcher.DEFAULT))
+                .withMatcher("taskType", match -> match.stringMatcher(ExampleMatcher.StringMatcher.DEFAULT));
+
+        List<TaskInfo> list = taskInfoRepository.findAll(Example.of(taskInfo, exampleMatcher));
+        return list.isEmpty();
+    }
+}

@@ -1,0 +1,7 @@
+hive.pool.maxsize=20
+hive.pool.minsize=3
+##mysql
+db.mysql.driver=com.mysql.jdbc.Driver
+db.mysql.eom.usr=tydk
+db.mysql.eom.pwd=tydk2017
+db.mysql.eom.url=jdbc:mysql://134.225.72.15:3306/test?characterEncoding=utf8&rewriteBatchedStatements=true&noAccessToProcedureBodies=true

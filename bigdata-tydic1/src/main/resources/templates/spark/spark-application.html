@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/main">
+<head>
+    <title th:text="${title}">spark管理</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                        <label class="control-label col-sm-1" for="ip">主机ip</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" name="ip" id="ip">
+                        </div>
+                        <label class="control-label col-sm-1" for="sparkConfigName">文件名</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" name="sparkConfig" id="sparkConfigName">
+                        </div>
+                        <label class="control-label col-sm-1" for="sparkConfigName">应用名</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" name="appName" id="sparkAppName">
+                        </div>
+                        <div class="col-sm-4" style="text-align:left;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="toolbar" class="btn-group">
+            <button id="btn_add" type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+            </button>
+            <button id="btn_update" type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>修改
+            </button>
+            <button id="btn_delete" type="button" class="btn btn-default" data-toggle="modal" data-target="#delete-confirm">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除数据和文件
+            </button>
+            <button id="btn_back" type="button" class="btn btn-default" data-toggle="modal" data-target="#sparkModal">
+                <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>备份
+            </button>
+            <button id="btn_online" type="button" class="btn btn-default" data-toggle="modal" data-target="#sparkOnline">
+                <span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>查看服务器spark应用配置文件
+            </button>
+            <button id="btn_deleteData" type="button" class="btn btn-default" data-toggle="modal" data-target="#myDeletModal">
+                <span class="glyphicon  glyphicon-trash" aria-hidden="true"></span>删除数据
+            </button>
+        </div>
+
+        <table id="tb_spark"></table>
+    </div>
+    <script th:src="@{/js/spark/spark-app.js}"></script>
+    <script th:src="@{/js/spark/sparkAppOnline.js}"></script>
+</section>
+</body>
+</html>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="sparkOnline" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="sparkOnlineLable">更新spark应用配置文件到数据库</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" style="height: 30px">
+                    <label for="hostServeList" class="col-sm-2 control-label">服务名（IP地址）</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" style="width: 25%"  id="hostServeList1" name="hostServeId">
+                            <option>请选择</option>
+                        </select>
+                    </div>
+                </div>
+                <table id="tb_sparkOnline"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="save-import" class="btn btn-primary">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">新增spark配置信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="sparkInfo">
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="hostServeList" class="col-sm-2 control-label">服务名（IP地址）</label>
+                                            <div class="col-sm-6">
+                                                <select class="form-control" id="hostServeList" name="hostServeId">
+                                                    <option>请选择</option>
+                                                </select>
+                                                <input type="hidden" class="form-control" id="sparkId" name="sparkId">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary" type="button" id="testHostConnet">测试连接
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="appName" class="col-sm-2 control-label">应用名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="appName" id="appName" placeholder="请输入应用名称">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="sparkConfig" class="col-sm-2 control-label">spark配置文件名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" value=".sh" name="sparkConfig" id="sparkConfig" placeholder="请输入文件名称">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="sparkConfigContent" class="col-sm-2 control-label">spark配置文本</label>
+                                            <div class="col-sm-10">
+                                                <!--<input type="text" class="form-control" name="sparkConfigPath" id="sparkConfigPath" placeholder="请输入配置文件地址">-->
+                                                <textarea  class="form-control" name="sparkConfigContent" id="sparkConfigContent" placeholder="请输入配置文本内容">
+
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="sparkConfigDesc" class="col-sm-2 control-label">spark配置文件描述</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="sparkConfigDesc" id="sparkConfigDesc" placeholder="请输入文件描述">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="save" class="btn btn-primary">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- /.modal -->
+<div class="modal fade" id="myDeletModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="deleteModal">删除spark配置数据信息</h4>
+            </div>
+            <div class="modal-body">
+                确定删除？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="delete" class="btn btn-primary">删除</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="">确认删除框</h4>
+            </div>
+            <div class="modal-body">
+                确认删除spark应用配置数据和文件吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button"  class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="delete-sure" class="btn btn-primary">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="sparkModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="title"></h4>
+            </div>
+            <div class="modal-body" id="content">
+
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="value">
+                <button type="button"  class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="sure" class="btn btn-primary">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

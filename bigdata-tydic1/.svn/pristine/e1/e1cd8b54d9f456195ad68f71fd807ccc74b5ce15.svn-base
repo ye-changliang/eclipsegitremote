@@ -1,0 +1,38 @@
+package com.tydic.bigdata.constant;
+
+/**
+ * @author taowc
+ * @date 2018/9/3
+ * @desc
+ */
+public enum TaskInfoEnum {
+    audit_waiting(0, "待审核"),
+    audit_pass(1, "已通过"),
+    audit_refuce(2, "已撤回"),
+    release_pass(1, "已发布"),
+    release_waiting(0, "待发布");
+
+    private String name;
+    private int status;
+
+    TaskInfoEnum(int status, String name) {
+        this.name = name;
+        this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int index) {
+        this.status = index;
+    }
+}

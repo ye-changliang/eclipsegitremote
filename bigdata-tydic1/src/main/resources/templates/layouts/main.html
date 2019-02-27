@@ -1,0 +1,181 @@
+<html lang=""
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8"/>
+    <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+    <meta content="HTML5 Template" name="keywords"/>
+    <meta content="Porto - Responsive HTML5 Template" name="description"/>
+    <meta content="okler.net" name="author"/>
+
+    <!-- Mobile Metas -->
+    <meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <!-- Favicon -->
+    <link href="/logo.png" rel="title-icon" th:href="@{/logo.png}"/>
+
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/bootstrap-table/css/bootstrap-table.css}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/main/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar/navbar.css}" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link th:href="@{/assets/css/ie10-viewport-bug-workaround.css}" rel="stylesheet">
+    <link th:href="@{/toastr/toastr.min.css}" rel="stylesheet">
+    <link th:href="@{/bootstrap-select/bootstrap-select.min.css}" rel="stylesheet">
+    <!-- 时间日期样式 -->
+    <link th:href="@{/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script th:src="@{/assets/js/ie8-responsive-file-warning.js}"></script>
+    <![endif]-->
+    <script th:src="@{/assets/js/ie-emulation-modes-warning.js}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script th:src="@{/assets/js/html5shiv.min.js}"></script>
+    <script th:src="@{/assets/js/respond.min.js}"></script>
+    <![endif]-->
+
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script th:src="@{/assets/js/vendor/jquery-1.12.4.min.js}"></script>
+    <script>window.jQuery || document.write('<script th:src="@{/assets/js/vendor/jquery.min.js}"><\/script>')</script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script th:src="@{/bootstrap/js/bootstrap.js}"></script>
+    <script th:src="@{/bootstrap-table/js/bootstrap-table.js}"></script>
+    <script th:src="@{/bootstrap-table/js/bootstrap-table-zh-CN.js}"></script>
+    <script th:src="@{/bootstrap-select/bootstrap-select.min.js}"></script>
+    <script th:src="@{/bootstrap-select/defaults-zh_CN.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap3-typeahead.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap-datetimepicker.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap-datetimepicker.zh-CN.js}"></script>
+    <script th:src="@{/bootstrap/js/moment-with-locales.js}"></script>
+    <script th:src="@{/toastr/toastr.min.js}"></script>
+    <script th:src="@{/js/main/main.js}"></script>
+
+</head>
+<body>
+<!--<div>-->
+
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">中国电信</a>
+        </div>
+        <!--<div id="navbar" class="navbar-collapse collapse">-->
+            <!--<ul class="nav navbar-nav navbar-right">-->
+                <!--<li><a href="#">Dashboard</a></li>-->
+                <!--<li><a href="#">Settings</a></li>-->
+                <!--<li><a href="#">Profile</a></li>-->
+                <!--<li><a href="#">Help</a></li>-->
+            <!--</ul>-->
+            <!--<form class="navbar-form navbar-right">-->
+                <!--<input type="text" class="form-control" placeholder="Search...">-->
+            <!--</form>-->
+        <!--</div>-->
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div id="navbar-li" class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li href="#shishi-nav" data-toggle="collapse">
+                    <a data-toggle="collapse">
+                        服务配置化管理
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </li>
+                <ul id="shishi-nav" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                    <li><a th:href="@{/host-info/}">&emsp;&emsp;主机信息</a></li>
+                    <li><a th:href="@{/host-serve/}">&emsp;&emsp;主机服务信息</a></li>
+                    <li><a th:href="@{/flume/}">&emsp;&emsp;Flume 服务级参数配置 </a></li>
+                    <li><a th:href="@{/flume/monitor}">&emsp;&emsp;Flume 监控 </a></li>
+                    <li><a th:href="@{/kafKa/}">&emsp;&emsp;KafKa 服务级参数配置 </a></li>
+                    <li><a th:href="@{/kafKa/monitor}">&emsp;&emsp;KafKa 监控 </a></li>
+                    <li><a th:href="@{/redis/}">&emsp;&emsp;Redis 服务级参数配置 </a></li>
+                    <li><a th:href="@{/redis/monitor}">&emsp;&emsp;Redis 监控 </a></li>
+                    <li><a th:href="@{/spark-serve/serve}">&emsp;&emsp;Spark 服务级参数配置 </a></li>
+                    <li><a th:href="@{/spark-app/application}">&emsp;&emsp;Spark 应用级参数配置 </a></li>
+                    <li><a th:href="@{/spark-monitor/monitor}">&emsp;&emsp;Spark 应用监控 </a></li>
+                </ul>
+                <li href="#shortLinks-nav" data-toggle="collapse">
+                    <a data-toggle="collapse">
+                        应用（短链接）管理
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </li>
+                <ul id="shortLinks-nav" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                    <li><a th:href="@{/short-links/}">&emsp;&emsp;短链接管理</a></li>
+                </ul>
+                <li href="#task-nav" data-toggle="collapse">
+                    <a data-toggle="collapse">
+                        发布管理
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </li>
+                <ul id="task-nav" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                    <li><a th:href="@{/task-apply/}">&emsp;&emsp;任务申请</a></li>
+                    <li><a th:href="@{/task-audit/}">&emsp;&emsp;任务审核</a></li>
+                </ul>
+                <li href="#api-nav" data-toggle="collapse">
+                    <a data-toggle="collapse">
+                        api接口管理
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </li>
+                <ul id="api-nav" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                    <li><a th:href="@{/api-config/}">&emsp;&emsp;接口管理</a></li>
+                    <li><a th:href="@{/api-params-config/}">&emsp;&emsp;参数管理</a></li>
+                    <li><a th:href="@{/api-kafka-config/}">&emsp;&emsp;kafka管理</a></li>
+                </ul>
+                <li href="#hive-nav" data-toggle="collapse">
+                    <a data-toggle="collapse">
+                        Hive接入管理
+                        <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                </li>
+                <ul id="hive-nav" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                    <li><a th:href="@{/hive/}">&emsp;&emsp;hive注册</a></li>
+                    <li><a th:href="@{/hive/set}">&emsp;&emsp;hive组件配置</a></li>
+                    <li><a th:href="@{/hive/monitor}">&emsp;&emsp;hive接入监控管理</a></li>
+                    <li><a th:href="@{/hive/task}">&emsp;&emsp;hive任务列表管理</a></li>
+                </ul>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <!-- 页面主体部分-->
+            <section layout:fragment="content"></section>
+        </div>
+
+    </div>
+</div>
+<!--</div>-->
+
+<div class="modal fade" id="loadingModal" style="z-index: 20000"  data-backdrop="static">
+    <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+        <div class="progress progress-striped active" style="margin-bottom: 0;">
+            <div class="progress-bar" style="width: 100%;"></div>
+        </div>
+        <h5>正在加载...</h5>
+    </div>
+</div>
+</body>
+<script>EventInit.Init();</script>
+</html>
+

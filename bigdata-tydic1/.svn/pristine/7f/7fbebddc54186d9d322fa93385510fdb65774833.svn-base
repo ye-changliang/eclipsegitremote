@@ -1,0 +1,73 @@
+package com.tydic.bigdata.service.apiconfig;
+
+import com.tydic.bigdata.domain.apiconfig.ApiConfigMenu;
+import com.tydic.bigdata.domain.apiconfig.ApiKafKaConfig;
+import com.tydic.bigdata.repository.apiconfig.ApiConfigMenuRepository;
+import com.tydic.bigdata.repository.apiconfig.ApiKafKaConfigRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * @author taowc
+ * @date 2018/9/7
+ * @desc
+ */
+@Service
+public class ApiKafKaConfigService {
+
+    @Autowired
+    private ApiKafKaConfigRepository apiKafKaConfigRepository;
+
+    @Autowired
+    private ApiConfigMenuRepository apiConfigMenuRepository;
+    /**
+     * 根据名称 模糊匹配 记录 分页
+     *
+     * @param pageable
+     * @param apiKafKaConfig
+     * @return
+     */
+    public Page<ApiKafKaConfig> findAll(Pageable pageable, ApiKafKaConfig apiKafKaConfig) {
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("kafkaCode", ExampleMatcher.GenericPropertyMatcher::contains)
+                .withMatcher("status", match -> match.stringMatcher(ExampleMatcher.StringMatcher.DEFAULT));
+        apiKafKaConfig.setStatus(1);
+        return apiKafKaConfigRepository.findAll(Example.of(apiKafKaConfig, exampleMatcher), pageable);
+    }
+
+
+    /**
+     * 保存修改
+     *
+     * @param apiKafKaConfig
+     * @return
+     */
+    public Boolean save(ApiKafKaConfig apiKafKaConfig) {
+        apiKafKaConfig = apiKafKaConfigRepository.save(apiKafKaConfig);
+        return apiKafKaConfig.getId() != null;
+
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param ids
+     * @return
+     */
+    public Boolean delete(Long[] ids) {
+        return apiKafKaConfigRepository.deleteByIds(Arrays.asList(ids)) > 0;
+    }
+
+
+    public List<String> findKafkaCodeList(){
+        return  apiKafKaConfigRepository.findKafkaCodeList();
+    }
+}

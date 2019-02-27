@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/main">
+<head>
+    <title th:text="${title}">hive组件配置</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Hive接入代理组件配置
+            </h3>
+        </div>
+        <div class="panel-body" id="Zujian">
+            <form class="form-horizontal" id="HiveAddMesssage">
+
+                <div class="form-group">
+                    <label for="hiveSelect" class="col-sm-2 control-label"> 集群分类：</label>
+                    <div class="col-sm-10">
+                        <select class="form-control selectpicker" name="clusterName" id="clusterNames"
+                                style="float:left;width:1074px;margin-left:15px;" onchange="selectApar()">
+                            <option value="" selected="selected">请选择集群分类</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hiveSelect" class="col-sm-2 control-label"> Hive连接类别：</label>
+                    <div class="col-sm-10">
+                        <select class="form-control selectpicker" name="hiveName" id="hiveNames"
+                                style="float:left;width:1074px;margin-left:15px;">
+                            <option value="">请选择连接分类</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="connectAddress" class="col-sm-2 control-label">Hive连接地址：</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="hiveAddress" id="hiveAddress"
+                               placeholder="请输入连接地址">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="connectnumber" class="col-sm-2 control-label">最大连接数目：</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="totalNum" name="totalNum"
+                               placeholder="请输入最大连接数">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label">租户名称：</label>
+                    <div class="col-sm-10">
+                        <select class="form-control selectpicker" name="userName" id="userNames"
+                                style="float:left;width:1074px;margin-left:0px;" onchange="showPassword()">
+                            <option value="">请选择租户</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="userpassword" class="col-sm-2 control-label">租户密码：</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="userPassword" name="userPassword"
+                               placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hiveSelect" class="col-sm-2 control-label"> 连接数告警：</label>
+                    <div class="col-sm-10">
+                        <select class="form-control selectpicker" id="connectWarn" name="connectWarn"
+                                style="float:left;width:1074px;margin-left:15px;">
+                            <option value="0.6">60%</option>
+                            <option value="0.7">70%</option>
+                            <option value="0.8">80%</option>
+                            <option value="0.9">90%</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-succes" id="MessageSet">配置</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <div class="panel-body" id="showMessagess" style="display:none;">
+            <form class="form-horizontal" id="Messsageshow">
+                <div class="form-group">
+                    <label for="hiveSelect" class="col-sm-2 control-label"> 集群分类：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="clusterType" name="clusterType">
+                        实时集群
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hiveSelect" class="col-sm-2 control-label"> Hive连接分类：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="connectType" name="connectType">
+                        Hive1
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="connectAddress" class="col-sm-2 control-label">Hive连接地址：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="connectAddress" name="connectAddress">
+                        /hadoop/cloud_platform/cloud_service/kafka/current/config
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="connectnumber" class="col-sm-2 control-label">连接数目：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="connectnumber" name="connectnumber">
+                        200
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label">租户名称：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="username" name="username">
+                        hadoop1
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="userpassword" class="col-sm-2 control-label">租户密码：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="userpassword" name="userpassword">
+                        qwrtt11y2
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hiveSelect" class="col-sm-2 control-label"> 连接数告警：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="warnType" name="warnType">
+                        70%
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hiveSelect" class="col-sm-2 control-label"> 配置时间：</label>
+                    <div class="col-sm-10" style="margin-top:10px;" id="setTime" name="setTime">
+                        2018-09-04
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                组件配置信息表
+            </h3>
+        </div>
+
+        <div class="panel-body">
+            <div id="toolbar" class="btn-group">
+                <button id="btn_update" type="button" class="btn btn-default"
+                        data-toggle="modal" data-target="#myModal">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>修改
+                </button>
+                <button id="btn_delete" type="button" class="btn btn-default"
+                        data-toggle="modal" data-target="#delete-confirm">
+                    <span class="glyphicon glyphicon-remove"></span>删除
+                </button>
+            </div>
+            <table id="tb_hiveset"></table>
+        </div>
+
+    </div>
+
+    <script th:src="@{/js/hive/hive-set.js}"></script>
+</section>
+</body>
+</html>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="hivesetsave">
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="host" class="col-sm-2 control-label">集群分类</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control selectpicker" name="clusterName"
+                                                        id="clusterNamess" onchange="selectApar1()">
+                                                    <option value="">请选择集群分类</option>
+                                                </select>
+                                                <input type="hidden" class="form-control" id="idsx" name="id"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">连接分类</label>
+                                            <div class="col-sm-10" id="userName" name="userName">
+                                                <select class="form-control selectpicker" name="hiveName"
+                                                        id="hiveNamess">
+                                                    <option value="">请选择连接</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">Hive连接地址</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="hiveAddressw"
+                                                       name="hiveAddress"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">连接数：</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="totalNums" name="totalNum"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">租户名称：</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control selectpicker" name="userName"
+                                                        id="userNamess" onchange="showPasswords()">
+                                                    <option value="">请选择租户</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">租户密码：</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="userPasswords"
+                                                       name="userPassword"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">连接数告警：</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control selectpicker" id="connectWarns"
+                                                        name="connectWarn">
+                                                    <option value="0.6">60%</option>
+                                                    <option value="0.7">70%</option>
+                                                    <option value="0.8">80%</option>
+                                                    <option value="0.9">90%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">配置时间：</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="setTimes" name="setTime"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="btn-group"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="save" class="btn btn-primary">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- /.modal -->
+<div class="modal fade" id="myDeletModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="deleteModal">删除信息</h4>
+            </div>
+            <div class="modal-body">
+                确定删除？
+                <input type="hidden" id="idsxx" name="ids">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="delete" class="btn btn-primary">删除</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="">确认删除框</h4>
+            </div>
+            <div class="modal-body">
+                确认删除以上标签吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="delete-sure" class="btn btn-primary">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+

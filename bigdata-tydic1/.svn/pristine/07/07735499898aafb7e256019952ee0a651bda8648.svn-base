@@ -1,0 +1,63 @@
+package com.tydic.bigdata.service.apiconfig;
+
+import com.tydic.bigdata.domain.apiconfig.ApiKafKaConfig;
+import com.tydic.bigdata.domain.apiconfig.ApiParamsConfig;
+import com.tydic.bigdata.repository.apiconfig.ApiParamsConfigRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+
+/**
+ * @author taowc
+ * @date 2018/9/7
+ * @desc
+ */
+@Service
+public class ApiParamsConfigService {
+    @Autowired
+    private ApiParamsConfigRepository apiParamsConfigRepository;
+
+    /**
+     * 根据名称 模糊匹配 记录 分页
+     *
+     * @param pageable
+     * @param apiParamsConfig
+     * @return
+     */
+    public Page<ApiParamsConfig> findAll(Pageable pageable, ApiParamsConfig apiParamsConfig) {
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("apiCode", ExampleMatcher.GenericPropertyMatcher::contains)
+                .withMatcher("paramName", ExampleMatcher.GenericPropertyMatcher::contains)
+                .withMatcher("status", match -> match.stringMatcher(ExampleMatcher.StringMatcher.DEFAULT));
+        apiParamsConfig.setStatus(1);
+        return apiParamsConfigRepository.findAll(Example.of(apiParamsConfig, exampleMatcher), pageable);
+    }
+
+
+    /**
+     * 保存修改
+     *
+     * @param apiParamsConfig
+     * @return
+     */
+    public Boolean save(ApiParamsConfig apiParamsConfig) {
+        apiParamsConfig = apiParamsConfigRepository.save(apiParamsConfig);
+        return apiParamsConfig.getId() != null;
+
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param ids
+     * @return
+     */
+    public Boolean delete(Long[] ids) {
+        return apiParamsConfigRepository.deleteByIds(Arrays.asList(ids)) > 0;
+    }
+}

@@ -1,0 +1,26 @@
+package com.tydic.bigdata.repository.taskconfig;
+
+import com.tydic.bigdata.domain.taskconfig.TaskInfo;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import javax.transaction.Transactional;
+import java.util.List;
+
+public interface TaskInfoRepository extends JpaRepository<TaskInfo, Long> {
+    /**
+     * 批量审核
+     *
+     * @param ids
+     * @param type
+     * @return
+     */
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    @Query(value = "update TaskInfo e set e.applyStatus=:type ,e.auditTime=current_time where e.id in (:ids) ")
+    int aduitTask(@Param("ids")Long ids, @Param("type") Integer type);
+
+
+}

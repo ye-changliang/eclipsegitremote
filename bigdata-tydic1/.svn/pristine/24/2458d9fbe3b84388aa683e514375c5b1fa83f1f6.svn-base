@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/main">
+<head>
+    <title th:text="${title}">主机信息管理</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                        <label class="control-label col-sm-1" for="hostName">主机ip</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" name="host" id="hostName">
+                        </div>
+                        <div class="col-sm-4" style="text-align:left;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="toolbar" class="btn-group">
+            <button id="btn_add" type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+            </button>
+            <button id="btn_update" type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>修改
+            </button>
+            <button id="btn_delete" type="button" class="btn btn-default" data-toggle="modal" data-target="#delete-confirm" >
+                <span class="glyphicon glyphicon-remove"></span>删除
+            </button>
+        </div>
+        <table id="tb_hostInfo"></table>
+    </div>
+    <script th:src="@{/js/host/hostInfo.js}"></script>
+    <script th:src="@{/js/host/hostValidator.js}"></script>
+</section>
+</body>
+
+</html>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">新增主机信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="hostSaveInfo">
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <div class="form-group">
+                                        <label for="host" class="col-sm-2 control-label">主机IP</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control"  id="host" name="host" placeholder="主机IP">
+                                            <input type="hidden" class="form-control" name="hostId" id="hostId" hidden="hidden">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="btn-group">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <div class="form-group">
+                                        <label for="userName" class="col-sm-2 control-label">用户名</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="userName" id="userName" placeholder="请输入用户名"  >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="btn-group">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <div class="form-group">
+                                        <label for="passWord" class="col-sm-2 control-label">密码</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="passWord" id="passWord" placeholder="请输入密码">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="btn-group">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <div class="form-group">
+                                        <label for="post" class="col-sm-2 control-label">端口</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control"   name="post" id="post" placeholder="请输入端口">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="btn-group">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="save" class="btn btn-primary">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- /.modal -->
+<div class="modal fade" id="myDeletModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="deleteModal">新增主机信息</h4>
+            </div>
+            <div class="modal-body">
+                确定删除？
+                <input type="hidden" id="dHostId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="delete" class="btn btn-primary">删除</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="">确认删除框</h4>
+            </div>
+            <div class="modal-body">
+                确认删除以上标签吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button"  class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="delete-sure" class="btn btn-primary">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

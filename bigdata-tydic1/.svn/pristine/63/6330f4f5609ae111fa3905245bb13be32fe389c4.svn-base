@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tydic.bigdata.mapper.JobEntryMapper">
+
+    <select id="findJobByNameOrId" resultType="java.util.HashMap">
+        select * from (
+        select a.Id_Job id,a.Id_Directory dirId,a.name name ,a.created_user
+        username,to_char(a.created_date,'yyyy/mm/dd') createDate ,41 as type ,job_status jobStatus from R_JOB a
+        union
+        select a.id_transformation id,a.Id_Directory dirId,a.name name ,a.created_user
+        username,to_char(a.created_date,'yyyy/mm/dd') createDate ,13 as type ,trans_status jobStatus from
+        R_TRANSFORMATION a
+        ) where 1=1
+        <if test="name!=null and name!=''">
+            and name like '%'||#{name}||'%'
+        </if>
+        <if test="id!=null and id!=''">
+            and ID =#{id}
+        </if>
+        <if test="(name==null or name=='') and (id==null or id=='') ">
+            and 1=0
+        </if>
+    </select>
+
+    <select id="findJobStatusById" resultType="java.util.HashMap">
+        select * from (
+        select status,
+               errors,
+               to_char(t.enddate, 'yyyy/mm/dd HH24:mi:ss') startdate,
+               to_char(t.logdate, 'yyyy/mm/dd HH24:mi:ss') enddate
+          from tydic_etl.etl_job_log t
+         where t.objectid = #{id}
+         order by t.REPLAYDATE desc
+        ) where rownum =1
+    </select>
+    <select id="findTransStatusById" resultType="java.util.HashMap">
+        select * from (
+        select status,
+               errors,
+               to_char(t.REPLAYDATE, 'yyyy/mm/dd HH24:mi:ss') startdate,
+               to_char(t.endDate, 'yyyy/mm/dd HH24:mi:ss') enddate
+          from tydic_etl.etl_trans_log t
+         where t.objectid = #{id}
+         order by t.REPLAYDATE desc
+        ) where rownum =1
+   </select>
+
+    <select id="findJobDataSource" resultType="java.util.HashMap">
+        select T.ID_JOBENTRY,T.ID_JOB,T.NAME,d.ID_DATABASE,db.USERNAME USERNAME,db.NAME DATABASE_NAME , db.HOST_NAME HOST_NAME, db.PORT PORT,to_char(db.DATABASE_NAME)  DBNAME
+          ,41 as type
+          from tydic_etl.R_JOBENTRY t
+          left join  tydic_etl.R_JOBENTRY_DATABASE d on t.id_jobentry   = d.id_jobentry
+          left join tydic_etl.R_DATABASE db on db.id_database = d.id_database
+         where t.id_job = #{jobId}
+    </select>
+    <select id="findTransDataSource" resultType="java.util.HashMap">
+        select T.ID_STEP  ID_JOBENTRY,T.ID_TRANSFORMATION ID_JOB,T.NAME,d.ID_DATABASE,db.USERNAME USERNAME,db.NAME  DATABASE_NAME , db.HOST_NAME HOST_NAME, db.PORT PORT,to_char(db.DATABASE_NAME)  DBNAME
+          ,41 as type
+          from tydic_etl.R_STEP t
+          left join  tydic_etl.R_STEP_DATABASE d on t.ID_STEP   = d.ID_TRANSFORMATION
+          left join tydic_etl.R_DATABASE db on db.id_database = d.id_database
+         where t.ID_STEP = #{jobId}
+    </select>
+
+
+    <select id="findAllDataSource" resultType="java.util.HashMap">
+        select ID_DATABASE ,NAME,HOST_NAME,NAME DATABASE_NAME,port, userName,to_char(DATABASE_NAME)  DBNAME
+        FROM tydic_etl.R_DATABASE
+        where 1=1
+        <if test="id!=null and id!=''">
+            and ID_DATABASE=#{id}
+        </if>
+    </select>
+
+    <update id="updateJobDataSourceAttr">
+         update  tydic_etl.R_JOBENTRY_ATTRIBUTE set value_NUM = #{dataBaseId} where id_jobentry=#{jobEntryId} and id_job=#{jobId} and code='id_database'
+    </update>
+    <update id="updateJobDataSource">
+       update  tydic_etl.R_JOBENTRY_DATABASE set ID_DATABASE =#{dataBaseId} where  id_job=#{jobId} and id_jobentry=#{jobEntryId}
+    </update>
+
+    <update id="updateTransDataSourceAttr">
+        update  tydic_etl.R_STEP_ATTRIBUTE set value_NUM =  #{dataBaseId} where id_STEP=#{jobEntryId} and id_TRANSFORMATION=#{jobId} and code='id_connection'
+    </update>
+    <update id="updateTransDataSource">
+        update  tydic_etl.R_STEP_DATABASE set ID_DATABASE =#{dataBaseId} where  id_TRANSFORMATION=#{jobId} and id_STEP=#{jobEntryId}
+    </update>
+
+    
+    <select id="selectChildrenJob" resultType="java.util.HashMap">
+        select *   from tydic_etl.R_JOBENTRY t where t.ID_jobEntry_type=#{type} and  t.id_job = #{jobId}
+    </select>
+    
+    <select id="selectJobAttr" resultType="java.lang.String">
+        select to_char(value_str) jobId from tydic_etl.R_JOBENTRY_ATTRIBUTE t where t.id_jobentry = #{jobEntryId} and code ='job_object_id'  and  to_char(value_str) is not null
+    </select>
+</mapper>
